@@ -1,27 +1,20 @@
---init.lua
-function startup()
-    if abort == true then
-        print('startup aborted')
-        return
-    end
-    wifi.setmode(wifi.STATION)
-    station_cfg={}
-    station_cfg.ssid="myWifi"
-    station_cfg.pwd="12345678ABCDEF"
-    station_cfg.save=false
-    wifi.sta.config(station_cfg)
-    wifi.sta.connect()
-    tmr.alarm(1, 1000, 1, function()
-        if wifi.sta.getip() == nil then
-            print("IP unavailable, waiting...")
-        else
-            tmr.stop(1)
-            print("IP is "..wifi.sta.getip())
-            dofile ("main.lua")
-        end
-    end)
-end
+-- file: init.lua
+
+app = {}
+config = {}
 
 print('Type "abort = true" to abort startup.')
 abort = false
-tmr.alarm(0,5000,0,startup)
+tmr.alarm(0,5000,0,function()
+	    if abort == true then
+        	print('startup aborted')
+        	return
+        end
+        
+        app = require("application")
+        config = require("config")
+        setup = require("setup")
+        radio = require("cc2500")
+
+        setup.start()
+    end)
